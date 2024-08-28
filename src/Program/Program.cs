@@ -13,53 +13,69 @@ namespace Ucu.Poo.GameOfLife
         }
     }
 
-
     class Tablero
     {
-        bool[,] b //variable que representa el tablero
-        int width //variabe que representa el ancho del tablero
-        int height //variabe que representa altura del tablero
-        while (true)
+        bool[,] b; // Variable que representa el tablero
+        int width; // Variable que representa el ancho del tablero
+        int height; // Variable que representa la altura del tablero
+
+        public Tablero(int width, int height)
         {
-            Console.Clear();
-            StringBuilder s = new StringBuilder();
-            for (int y = 0; y < height; y++)
+            this.width = width;
+            this.height = height;
+            b = new bool[width, height];
+        }
+
+        public void Mostrar()
+        {
+            while (true)
             {
-                for (int x = 0; x < width; x++)
+                Console.Clear();
+                StringBuilder s = new StringBuilder();
+                for (int y = 0; y < height; y++)
                 {
-                    if (b[x, y])
+                    for (int x = 0; x < width; x++)
                     {
-                        s.Append("|X|");
+                        if (b[x, y])
+                        {
+                            s.Append("|X|");
+                        }
+                        else
+                        {
+                            s.Append("___");
+                        }
                     }
-                    else
-                    {
-                        s.Append("___");
-                    }
+
+                    s.Append("\n");
                 }
 
-                s.Append("\n");
+                Console.WriteLine(s.ToString());
+                //=================================================
+                // Invocar método para calcular la siguiente generación
+                //=================================================
+                Thread.Sleep(300);
             }
-
-            Console.WriteLine(s.ToString());
-            //=================================================
-            //Invocar método para calcular siguiente generación
-            //=================================================
-            Thread.Sleep(300);
         }
     }
 
-    class logica
+    class Logica
     {
-        bool[,] gameBoard =  /* contenido del tablero */;
-        int boardWidth = gameBoard.GetLength(0);
-        int boardHeight = gameBoard.GetLength(1);
+        bool[,] gameBoard;
+        int boardWidth;
+        int boardHeight;
+        bool[,] cloneBoard;
 
-        bool[,] cloneboard = new bool[boardWidth, boardHeight];
-        public static funcionDeJuego();
+        public Logica(bool[,] initialBoard)
         {
-            for (int x = 0;
-                 x < boardWidth;
-                 x++)
+            gameBoard = initialBoard;
+            boardWidth = gameBoard.GetLength(0);
+            boardHeight = gameBoard.GetLength(1);
+            cloneBoard = new bool[boardWidth, boardHeight];
+        }
+
+        public void FuncionDeJuego()
+        {
+            for (int x = 0; x < boardWidth; x++)
             {
                 for (int y = 0; y < boardHeight; y++)
                 {
@@ -82,44 +98,49 @@ namespace Ucu.Poo.GameOfLife
 
                     if (gameBoard[x, y] && aliveNeighbors < 2)
                     {
-                        //Celula muere por baja población
-                        cloneboard[x, y] = false;
+                        // Celula muere por baja población
+                        cloneBoard[x, y] = false;
                     }
                     else if (gameBoard[x, y] && aliveNeighbors > 3)
                     {
-                        //Celula muere por sobrepoblación
-                        cloneboard[x, y] = false;
+                        // Celula muere por sobrepoblación
+                        cloneBoard[x, y] = false;
                     }
                     else if (!gameBoard[x, y] && aliveNeighbors == 3)
                     {
-                        //Celula nace por reproducción
-                        cloneboard[x, y] = true;
+                        // Celula nace por reproducción
+                        cloneBoard[x, y] = true;
                     }
                     else
                     {
-                        //Celula mantiene el estado que tenía
-                        cloneboard[x, y] = gameBoard[x, y];
+                        // Celula mantiene el estado que tenía
+                        cloneBoard[x, y] = gameBoard[x, y];
                     }
                 }
             }
 
-            gameBoard = cloneboard;
+            gameBoard = cloneBoard;
         }
     }
 
-    class archivo
+    class Archivo
     {
         string url = "ruta del archivo";
-        string content = File.ReadAllText(url);
-        string[] contentLines = content.Split('\n');
+        bool[,] board;
 
-        bool[,] board = new bool[contentLines.Length, contentLines[0].Length];
-        public pasarMatriz();
+        public Archivo(string filePath)
         {
-            for (int y = 0;
-                 y < contentLines.Length;
-                 y++)
+            url = filePath;
+            CargarMatriz();
+        }
 
+        private void CargarMatriz()
+        {
+            string content = File.ReadAllText(url);
+            string[] contentLines = content.Split('\n');
+
+            board = new bool[contentLines.Length, contentLines[0].Length];
+            for (int y = 0; y < contentLines.Length; y++)
             {
                 for (int x = 0; x < contentLines[y].Length; x++)
                 {
@@ -129,6 +150,11 @@ namespace Ucu.Poo.GameOfLife
                     }
                 }
             }
+        }
+
+        public bool[,] ObtenerMatriz()
+        {
+            return board;
         }
     }
 }
